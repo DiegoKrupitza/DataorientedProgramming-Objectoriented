@@ -234,7 +234,6 @@ class WeatherObservationsObjectOriented(object):
 						Weather observations aggregated by week.
 
 		"""
-		observation = None
 		week = date.isocalendar()[1]
 		aggrateObservations = []
 		
