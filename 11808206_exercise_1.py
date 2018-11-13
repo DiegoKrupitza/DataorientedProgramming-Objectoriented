@@ -37,6 +37,7 @@ import timeit
 import unittest
 import csv
 import math
+import timeit
 
 import numpy as np
 
@@ -691,16 +692,20 @@ def time_steps(observations, date):
 	# TODO: your changes here
 	# load all data
 	time_load = 0
-	load_all_data(observations)
+	time_load = load_all_data(observations)
+	
 	# retrieve (aggregated) values for day, week, month and year
 	time_day = 0
-	observations.day(date)
+	time_day = observations.day(date)
+	
 	time_week = 0
-	observations.week(date)
+	time_week = observations.week(date)
+	
 	time_month = 0
-	observations.month(date)
+	time_month = observations.month(date)
+	
 	time_year = 0
-	observations.year(date)
+	time_year = observations.year(date)
 	# return the recorded timings
 	return time_load, time_day, time_week, time_month, time_year
 
@@ -710,19 +715,24 @@ def evaluate():
 	Example function to compare the individual implementations.
 
 	"""
+	results = {}
+	iterations = 100
 	# TODO: your changes here
 	# object oriented
-	obs_oo = WeatherObservationsObjectOriented()
-	timings_oo = time_steps(obs_oo, datetime.date(2012, 1, 1))
+	#obs_oo = WeatherObservationsObjectOriented()
+	results['oo_results'] = timeit.timeit('timings_oo = time_steps(WeatherObservationsObjectOriented(), datetime.date(2012, 1, 1))',setup='from __main__ import time_steps,WeatherObservationsObjectOriented;import datetime',number=iterations)
 
 	# data oriented
-	obs_do = WeatherObservationsDataOriented()
-	timings_do = time_steps(obs_do, datetime.date(2012, 1, 1))
+	#obs_do = WeatherObservationsDataOriented()
+	results['do_results'] = timeit.timeit('timings_do = time_steps(WeatherObservationsDataOriented(), datetime.date(2012, 1, 1))',setup='from __main__ import time_steps,WeatherObservationsDataOriented; import datetime',number=iterations)
 
 	# data oriented w/ numpy
-	obs_np = WeatherObservationsDataOrientedNumpy
-	timings_np = time_steps(obs_np, datetime.date(2012, 1, 1))
-
+	#obs_np = WeatherObservationsDataOrientedNumpy
+	results['np_results'] = timeit.timeit('timings_np = time_steps(WeatherObservationsDataOrientedNumpy(), datetime.date(2012, 1, 1))',setup='from __main__ import time_steps,WeatherObservationsDataOrientedNumpy; import datetime',number=iterations)
+	
+	print(results)
+	results = sorted(results.items(), key=lambda x: x[1])
+	print(results)
 	# compare timings
 	return
 
@@ -732,6 +742,7 @@ def solution_task_4():
 	Return your solution for Task 4.
 
 	"""
+	evaluate()
 	# TODO: your changes here
 	return '''
 	TODO: Fill in your solution for Task 5 here.
