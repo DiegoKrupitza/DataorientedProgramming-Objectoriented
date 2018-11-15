@@ -124,7 +124,8 @@ class WeatherObservationsObjectOriented(object):
 	Missing values should be omitted during aggregation.
 
 	"""
-	observations = {}
+	def __init__(self):
+		self.observations = {}
 
 	def load_data(self, filename):
 		"""
@@ -137,11 +138,11 @@ class WeatherObservationsObjectOriented(object):
 						File containing the weather observations in CSV format.
 
 		"""
-		year = filename[filename.index("_")+1:filename.index(".")]
 		with open(filename) as csvfile:
 			fieldReader = csv.reader(csvfile, delimiter=',', quotechar='"')
-			next(fieldReader)  # skipping the first line with the descriptions
+			next(fieldReader)  # kipping the first line with the descriptions
 			for row in fieldReader:
+				year = filename[filename.index("_")+1:filename.index(".")]
 				day = row[2]
 				month = row[1]
 				date = "{}.{}.{}".format(day, month, year) # format day.month.year
@@ -234,6 +235,7 @@ class WeatherObservationsObjectOriented(object):
 						Weather observations aggregated by week.
 
 		"""
+		observation = None
 		week = date.isocalendar()[1]
 		aggrateObservations = []
 		
@@ -340,8 +342,9 @@ class WeatherObservationsDataOriented(object):
 	 ]
 
 	"""
-	observations = []
-	index_list = [] # due to the fact that i'm using a simple list and not a dictionary i might have to use a serperate list for my indizes that the best solution for that case
+	def __init__(self):
+		self.observations = []
+		self.index_list = [] # due to the fact that i'm using a simple list and not a dictionary i might have to use a serperate list for my indizes that the best solution for that case
 
 	def load_data(self, filename):
 		"""
@@ -544,9 +547,9 @@ class WeatherObservationsDataOrientedNumpy(object):
 	during aggregation.
 
 	"""
-	
-	observations = np.array([None,None,None,None,None,None,None,None,None,None,None,None,None,None,None],dtype = np.float)
-	index_list = []
+	def __init__(self):
+		self.observations = np.array([None,None,None,None,None,None,None,None,None,None,None,None,None,None,None],dtype = np.float)
+		self.index_list = []
 
 	def load_data(self, filename):
 		"""
@@ -822,7 +825,6 @@ def test():
 	# monthly average
 	month = obs.month(datetime.date(2012, 10, 1))
 	assert isinstance(month, WeatherObservation)
-	print("Ergebnis:",month.temp_dailyMin, "Should be: 6.9387")
 	assert np.allclose(month.temp_dailyMin, 6.9387, atol=1e-3)
 	# load all years
 	obs = load_all_data(obs)
