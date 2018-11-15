@@ -37,7 +37,7 @@ import timeit
 import unittest
 import csv
 import math
-import timeit
+import time
 
 import numpy as np
 
@@ -137,12 +137,11 @@ class WeatherObservationsObjectOriented(object):
 						File containing the weather observations in CSV format.
 
 		"""
-		# DONETODO: your changes here
+		year = filename[filename.index("_")+1:filename.index(".")]
 		with open(filename) as csvfile:
 			fieldReader = csv.reader(csvfile, delimiter=',', quotechar='"')
-			next(fieldReader)  # kipping the first line with the descriptions
+			next(fieldReader)  # skipping the first line with the descriptions
 			for row in fieldReader:
-				year = filename[filename.index("_")+1:filename.index(".")]
 				day = row[2]
 				month = row[1]
 				date = "{}.{}.{}".format(day, month, year) # format day.month.year
@@ -360,13 +359,12 @@ class WeatherObservationsDataOriented(object):
 			fieldReader = csv.reader(csvfile, delimiter=',', quotechar='"')
 			next(fieldReader)  # kipping the first line with the descriptions
 			year = filename[filename.index("_")+1:filename.index(".")]
-			for row in fieldReader:
-				day = row[2]
-				month = row[1]
-				date = "{}.{}.{}".format(day, month, year) # format day.month.year
-				if date not in self.index_list:
-					#print("Reading information from Date {}".format(date))
-					self.index_list.append(date)
+			if year not in self.index_list:
+				self.index_list.append(year)
+				for row in fieldReader:
+					day = row[2]
+					month = row[1]
+					date = "{}.{}.{}".format(day, month, year) # format day.month.year
 					col = [float(x) if x != '' else None for x in row]
 					matrixRow = [date, month, day, col[3], col[4], col[5], col[6], col[7], col[8], col[9], col[10], col[11], col[12], col[13]]
 					self.observations.append(matrixRow)
@@ -548,7 +546,7 @@ class WeatherObservationsDataOrientedNumpy(object):
 	"""
 	
 	observations = np.array([None,None,None,None,None,None,None,None,None,None,None,None,None,None,None],dtype = np.float)
-	index_list = np.array([''],dtype = str)
+	index_list = []
 
 	def load_data(self, filename):
 		"""
@@ -565,17 +563,18 @@ class WeatherObservationsDataOrientedNumpy(object):
 			fieldReader = csv.reader(csvfile, delimiter=',', quotechar='"')
 			next(fieldReader)  # kipping the first line with the descriptions
 			year = filename[filename.index("_")+1:filename.index(".")]
-			for row in fieldReader:
-				day = row[2]
-				month = row[1]
-				date = "{}.{}.{}".format(day, month, year) # format day.month.year
-				week = datetime.datetime.strptime(date, "%d.%m.%Y").isocalendar()[1]
-				#print("Reading information from Date {}".format(date))
-				if date not in self.index_list:
+			if year not in self.index_list:
+				self.index_list.append(year)
+				for row in fieldReader:
+					day = row[2]
+					month = row[1]
+					date = "{}.{}.{}".format(day, month, year) # format day.month.year
+					week = datetime.datetime.strptime(date, "%d.%m.%Y").isocalendar()[1]
+					#print("Reading information from Date {}".format(date))
 					row = [x if x != "" else None for x in row ]
 					matrixRow = np.array([[week, day, month, year, row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13]]],dtype = np.float)
 					self.observations = np.vstack((self.observations,matrixRow))	
-					self.index_list = np.column_stack((self.index_list,np.array([date])))
+					
 					
 	def day(self, date):
 		day = date.day
@@ -692,20 +691,42 @@ def time_steps(observations, date):
 	# TODO: your changes here
 	# load all data
 	time_load = 0
-	time_load = load_all_data(observations)
+	start_load = time.process_time()
+	load_all_data(observations)
+	end_load = time.process_time()
+	time_load = end_load - start_load
+	#print("Time load:",time_load)
 	
 	# retrieve (aggregated) values for day, week, month and year
 	time_day = 0
+	start_day = time.process_time()
 	time_day = observations.day(date)
-	
+	end_day = time.process_time()
+	time_day = end_day - start_day
+	#print("Time day:",time_day)
+
 	time_week = 0
+	start_week = time.process_time()
 	time_week = observations.week(date)
-	
+	end_week = time.process_time()
+	time_week = end_week - start_week
+	#print("Time week:",time_week)
+
 	time_month = 0
+	start_month = time.process_time()
 	time_month = observations.month(date)
-	
+	end_month = time.process_time()
+	time_month = end_month - start_month
+	#print("Time month:",time_month)
+
+
 	time_year = 0
+	start_year = time.process_time()
 	time_year = observations.year(date)
+	end_year = time.process_time()
+	time_year = end_year - start_year
+	#print("Time year:",time_year)
+
 	# return the recorded timings
 	return time_load, time_day, time_week, time_month, time_year
 
@@ -715,26 +736,26 @@ def evaluate():
 	Example function to compare the individual implementations.
 
 	"""
-	results = {}
-	iterations = 100
+
 	# TODO: your changes here
 	# object oriented
-	#obs_oo = WeatherObservationsObjectOriented()
-	results['oo_results'] = timeit.timeit('timings_oo = time_steps(WeatherObservationsObjectOriented(), datetime.date(2012, 1, 1))',setup='from __main__ import time_steps,WeatherObservationsObjectOriented;import datetime',number=iterations)
+	#print("Objectoriented")
+	obs_oo = WeatherObservationsObjectOriented()
+	times_oo = time_steps(obs_oo, datetime.date(2012, 1, 1))
 
 	# data oriented
-	#obs_do = WeatherObservationsDataOriented()
-	results['do_results'] = timeit.timeit('timings_do = time_steps(WeatherObservationsDataOriented(), datetime.date(2012, 1, 1))',setup='from __main__ import time_steps,WeatherObservationsDataOriented; import datetime',number=iterations)
+	#print("Dataoriented")
+	obs_do = WeatherObservationsDataOriented()
+	times_do = time_steps(obs_do, datetime.date(2012, 1, 1))
 
 	# data oriented w/ numpy
-	#obs_np = WeatherObservationsDataOrientedNumpy
-	results['np_results'] = timeit.timeit('timings_np = time_steps(WeatherObservationsDataOrientedNumpy(), datetime.date(2012, 1, 1))',setup='from __main__ import time_steps,WeatherObservationsDataOrientedNumpy; import datetime',number=iterations)
+	#print("Numpy")
+	obs_np = WeatherObservationsDataOrientedNumpy()
+	times_np = time_steps(obs_np, datetime.date(2012, 1, 1))
 	
-	print(results)
-	results = sorted(results.items(), key=lambda x: x[1])
-	print(results)
+	
 	# compare timings
-	return
+	return times_oo, times_do, times_np
 
 
 def solution_task_4():
@@ -745,7 +766,11 @@ def solution_task_4():
 	evaluate()
 	# TODO: your changes here
 	return '''
-	TODO: Fill in your solution for Task 5 here.
+	For the messuring of the time I used the time module from python. The reason is that there were some problems with parameters using the timeit implementation.
+	According to the messurement the Dataoriented Aproach (without Numpy) is the fastest one for loading the date and numpy is the slowest. Thats obvious because numpy is not designed for single element operations, its designed to work on enormous datasets.
+	Thats the reason why numpy is in finding the mean for a certain month, week and year the fastest. 
+	Between the dataoriented and objectoriented Aproache are nearly no differences. Sometimes the object oriented is 0.002 seconds faster and sometimes the other way around
+	All in all its safe to say that numpy isnt that fast loading the data but it can work really fast on aggregated Data 
 	'''
 
 
@@ -797,6 +822,7 @@ def test():
 	# monthly average
 	month = obs.month(datetime.date(2012, 10, 1))
 	assert isinstance(month, WeatherObservation)
+	print("Ergebnis:",month.temp_dailyMin, "Should be: 6.9387")
 	assert np.allclose(month.temp_dailyMin, 6.9387, atol=1e-3)
 	# load all years
 	obs = load_all_data(obs)
