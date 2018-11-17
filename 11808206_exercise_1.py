@@ -769,11 +769,11 @@ def solution_task_4():
 	evaluate()
 	# TODO: your changes here
 	return '''
-	For the messuring of the time I used the time module from python. The reason is that there were some problems with parameters using the timeit implementation.
-	According to the messurement the Dataoriented Aproach (without Numpy) is the fastest one for loading the date and numpy is the slowest. Thats obvious because numpy is not designed for single element operations, its designed to work on enormous datasets.
-	Thats the reason why numpy is in finding the mean for a certain month, week and year the fastest. 
-	Between the dataoriented and objectoriented Aproache are nearly no differences. Sometimes the object oriented is 0.002 seconds faster and sometimes the other way around
-	All in all its safe to say that numpy isnt that fast loading the data but it can work really fast on aggregated Data 
+	For the measuring of the time I used the time module for python. The reason is that there were some problems with parameters using the timeit implementation.
+	According to the measurements the Dataoriented Approach (without Numpy) is the fastest one for loading the date and numpy is the slowest. That's obvious because numpy is not designed for single element operations, it's designed to work on enormous datasets.
+	That's the reason why numpy is in finding the mean for a certain month, week and year the fastest. 
+	Among the data oriented and object oriented approach is nearly no differences. Sometimes the object oriented is 0.002 seconds faster and sometimes the other way around
+	All in all it's safe to say that numpy isn't that fast loading the data, but it can work really fast on aggregated Data.
 	'''
 
 
