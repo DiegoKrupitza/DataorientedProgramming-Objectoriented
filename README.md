@@ -1,5 +1,8 @@
 # Dataoriented Programming vs. Objectoriented Programming
 
+## Performance Stats
+![Performance Stats](./Performance.png "Performance Stats")
+
 
 ## Tasks
 ### Task1 

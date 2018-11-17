@@ -694,40 +694,60 @@ def time_steps(observations, date):
 	# TODO: your changes here
 	# load all data
 	time_load = 0
-	start_load = time.process_time()
-	load_all_data(observations)
-	end_load = time.process_time()
-	time_load = end_load - start_load
+	for i in range(3):
+		start_load = time.process_time()
+		
+		load_all_data(observations)
+		
+		end_load = time.process_time()
+		time_load += (end_load - start_load)
+	time_load = time_load / 3
 	#print("Time load:",time_load)
 	
 	# retrieve (aggregated) values for day, week, month and year
 	time_day = 0
-	start_day = time.process_time()
-	time_day = observations.day(date)
-	end_day = time.process_time()
-	time_day = end_day - start_day
+	for i in range(3):
+		start_day = time.process_time()
+		
+		observations.day(date)
+		
+		end_day = time.process_time()
+		time_day += (end_day - start_day)
+	time_day = time_day / 3
 	#print("Time day:",time_day)
 
 	time_week = 0
-	start_week = time.process_time()
-	time_week = observations.week(date)
-	end_week = time.process_time()
-	time_week = end_week - start_week
+	for i in range(3):
+		start_week = time.process_time()
+		 
+		observations.week(date)
+		
+		end_week = time.process_time()
+		time_week += (end_week - start_week)
+	time_week = time_week / 3
 	#print("Time week:",time_week)
 
 	time_month = 0
-	start_month = time.process_time()
-	time_month = observations.month(date)
-	end_month = time.process_time()
-	time_month = end_month - start_month
+	for i in range(3):
+		start_month = time.process_time()
+		
+		observations.month(date)
+		
+		end_month = time.process_time()
+		time_month += (end_month - start_month)
+	time_month = time_month / 3
 	#print("Time month:",time_month)
 
 
 	time_year = 0
-	start_year = time.process_time()
-	time_year = observations.year(date)
-	end_year = time.process_time()
-	time_year = end_year - start_year
+	for i in range(3):
+		start_year = time.process_time()
+		
+		observations.year(date)
+		
+		end_year = time.process_time()
+		time_year += (end_year - start_year)
+	time_year = time_year / 3
 	#print("Time year:",time_year)
 
 	# return the recorded timings
@@ -742,17 +762,17 @@ def evaluate():
 
 	# TODO: your changes here
 	# object oriented
-	#print("Objectoriented")
+	print("Objectoriented")
 	obs_oo = WeatherObservationsObjectOriented()
 	times_oo = time_steps(obs_oo, datetime.date(2012, 1, 1))
 
 	# data oriented
-	#print("Dataoriented")
+	print("\nDataoriented")
 	obs_do = WeatherObservationsDataOriented()
 	times_do = time_steps(obs_do, datetime.date(2012, 1, 1))
 
 	# data oriented w/ numpy
-	#print("Numpy")
+	print("\nNumpy")
 	obs_np = WeatherObservationsDataOrientedNumpy()
 	times_np = time_steps(obs_np, datetime.date(2012, 1, 1))
 	
@@ -770,10 +790,11 @@ def solution_task_4():
 	# TODO: your changes here
 	return '''
 	For the measuring of the time I used the time module for python. The reason is that there were some problems with parameters using the timeit implementation.
-	According to the measurements the Dataoriented Approach (without Numpy) is the fastest one for loading the date and numpy is the slowest. That's obvious because numpy is not designed for single element operations, it's designed to work on enormous datasets.
-	That's the reason why numpy is in finding the mean for a certain month, week and year the fastest. 
+	According to the measurements the Dataoriented Approach (without Numpy) is the fastest one for loading the date and a few miliseconds numpy slower. That's obvious because numpy is not designed for single element operations, it's designed to work on enormous datasets which are already preloaded.
+	Therefore the numpy (and also the Dataoriented) approach are a lot slower doing single element operations than the objectoriented one.
+	On the other side numpy is in finding the mean for a certain month, week and year the fastest, because in thoose scenarios the way its working is at its best. 
 	Among the data oriented and object oriented approach is nearly no differences. Sometimes the object oriented is 0.002 seconds faster and sometimes the other way around
-	All in all it's safe to say that numpy isn't that fast loading the data, but it can work really fast on aggregated Data.
+	All in all it's safe to say that numpy isn't that fast loading the data, but it can work really fast on aggregated Data. On the other hand it is better to use objects for single element operations
 	'''
 
 
