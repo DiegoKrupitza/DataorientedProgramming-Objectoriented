@@ -477,6 +477,7 @@ class WeatherObservationsDataOriented(object):
 		# Finds the rows that are have the matching month for further operations
 		aggregateRows = []
 		month = date.month
+		
 		for row in self.observations:
 			datefromRow = datetime.datetime.strptime(row[0], "%d.%m.%Y")
 			if datefromRow.month == month:
@@ -762,17 +763,17 @@ def evaluate():
 
 	# TODO: your changes here
 	# object oriented
-	print("Objectoriented")
+	#print("Objectoriented")
 	obs_oo = WeatherObservationsObjectOriented()
 	times_oo = time_steps(obs_oo, datetime.date(2012, 1, 1))
 
 	# data oriented
-	print("\nDataoriented")
+	#print("\nDataoriented")
 	obs_do = WeatherObservationsDataOriented()
 	times_do = time_steps(obs_do, datetime.date(2012, 1, 1))
 
 	# data oriented w/ numpy
-	print("\nNumpy")
+	#print("\nNumpy")
 	obs_np = WeatherObservationsDataOrientedNumpy()
 	times_np = time_steps(obs_np, datetime.date(2012, 1, 1))
 	
@@ -816,7 +817,12 @@ def solution_task_5():
 	"""
 	# TODO: your changes here
 	return '''
-	TODO: Fill in your solution for Task 5 here.
+	Object oriented is for single element operations in its best state because of the dictionary (which contains as key a given date) it as fast and simple as possible.
+	For the calculation of the mean for every field for a given month, week, year is already quite sophisticated, because I'm saving the data in an object with the given date and month. So accessing the iterating the data, for example for a given year, it can be done easily.
+	The only difference between the Object oriented approach and the self written data oriented is only that one uses objects and the other one is based on matrixes and that instead of using a dictionary I'm using a list in Task 2. So to keep the data consistent and avoid redundancy in the dataset I implemented an additional list which contains all the indices.
+
+	The only way to improve both the tasks is to pre-calculate the week and store it as an additional field in an object or as an additional column in a matrix. But this will affect the speed of the loading process. That is the reason why i did not implemented it.  
+	Another potential, but sadly impossible way to improve the data oriented approach would be if it could be possible to slice arrays like with numpy. Sadly, that's not possible so the only efficient way is to iterate over the list.
 	'''
 
 
